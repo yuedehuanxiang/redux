@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import "antd/dist/antd.css";
 import store from "./store";
 import TodoListUI from "./TodoListUI";
-import axios from "axios";
+
 import {
   getInputChangeAction,
   getAddItemAction,
   getDeleteItemAction,
-  getListAction
+  getTodoList
 } from "./store/actionCreators";
 
 class TodoList extends Component {
@@ -32,15 +32,8 @@ class TodoList extends Component {
     );
   }
   componentDidMount() {
-    axios
-      .get(
-        "https://www.easy-mock.com/mock/5a282093817b456c2ecd19d6/example/todolist"
-      )
-      .then(res => {
-        const data = res.data.data;
-        const action = getListAction(data);
-        store.dispatch(action);
-      });
+    const action = getTodoList();
+    store.dispatch(action);
   }
   handleInputChange(e) {
     const action = getInputChangeAction(e.target.value);

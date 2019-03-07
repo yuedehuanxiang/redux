@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   CHANGE_INPUT_VALUE,
   ADD_TODO_ITEM,
@@ -19,3 +20,16 @@ export const getListAction = data => ({
   type: INIT_LIST_ACTION,
   data
 });
+export const getTodoList = () => {
+  return dispatch => {
+    axios
+      .get(
+        "https://www.easy-mock.com/mock/5a282093817b456c2ecd19d6/example/todolist"
+      )
+      .then(res => {
+        const data = res.data.data;
+        const action = getListAction(data);
+        dispatch(action);
+      });
+  };
+};
