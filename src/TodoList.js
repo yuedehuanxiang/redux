@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import "antd/dist/antd.css";
-import { Input, Button, List } from "antd";
 import store from "./store";
+import TodoListUI from "./TodoListUI";
+import axios from "axios";
 import {
-  CHANGE_INPUT_VALUE,
-  ADD_TODO_ITEM,
-  DELETE_TODO_ITEM
-} from "./store/actionTypes";
+  getInputChangeAction,
+  getAddItemAction,
+  getDeleteItemAction,
+  getListAction
+} from "./store/actionCreators";
 
 class TodoList extends Component {
   constructor(props) {
@@ -15,57 +17,44 @@ class TodoList extends Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleStoreChange = this.handleStoreChange.bind(this);
     this.handleBtnClick = this.handleBtnClick.bind(this);
+    this.handleItemDelete = this.handleItemDelete.bind(this);
     store.subscribe(this.handleStoreChange);
   }
   render() {
     return (
-      <div style={{ marginTop: "10px", marginLeft: "10px" }}>
-        <div>
-          <Input
-            onChange={this.handleInputChange}
-            value={this.state.inputValue}
-            placeholder="todo info"
-            style={{ width: "300px", marginRight: "10px" }}
-          />
-          <Button onClick={this.handleBtnClick} type="primary">
-            提交
-          </Button>
-        </div>
-        <List
-          style={{ marginTop: "10px", width: "300px" }}
-          bordered
-          dataSource={this.state.list}
-          renderItem={(item, index) => (
-            <List.Item onClick={this.handleItemDelete.bind(this, index)}>
-              {item}
-            </List.Item>
-          )}
-        />
-      </div>
+      <TodoListUI
+        handleItemDelete={this.handleItemDelete}
+        list={this.state.list}
+        handleBtnClick={this.handleBtnClick}
+        handleInputChange={this.handleInputChange}
+        inputValue={this.state.inputValue}
+      />
     );
   }
+  componentDidMount() {
+    axios
+      .get(
+        "https://www.easy-mock.com/mock/5a282093817b456c2ecd19d6/example/todolist"
+      )
+      .then(res => {
+        const data = res.data.data;
+        const action = getListAction(data);
+        store.dispatch(action);
+      });
+  }
   handleInputChange(e) {
-    const action = {
-      type: CHANGE_INPUT_VALUE,
-      value: e.target.value
-    };
+    const action = getInputChangeAction(e.target.value);
     store.dispatch(action);
   }
   handleStoreChange() {
     this.setState(store.getState());
   }
   handleBtnClick() {
-    const action = {
-      type: ADD_TODO_ITEM
-    };
+    const action = getAddItemAction();
     store.dispatch(action);
   }
   handleItemDelete(index) {
-    // console.log(index);
-    const action = {
-      type: DELETE_TODO_ITEM,
-      index
-    };
+    const action = getDeleteItemAction(index);
     store.dispatch(action);
   }
 }
