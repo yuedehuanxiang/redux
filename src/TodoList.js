@@ -7,7 +7,7 @@ import {
   getInputChangeAction,
   getAddItemAction,
   getDeleteItemAction,
-  getTodoList
+  getInitList
 } from "./store/actionCreators";
 
 class TodoList extends Component {
@@ -32,7 +32,16 @@ class TodoList extends Component {
     );
   }
   componentDidMount() {
-    const action = getTodoList();
+    // axios
+    //   .get(
+    //     "https://www.easy-mock.com/mock/5a282093817b456c2ecd19d6/example/todolist"
+    //   )
+    //   .then(res => {
+    //     const data = res.data.data;
+    //     const action = getListAction(data);
+    //     store.dispatch(action);
+    //   });
+    const action = getInitList();
     store.dispatch(action);
   }
   handleInputChange(e) {
